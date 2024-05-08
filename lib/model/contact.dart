@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 
 class Contact {
+  int? id;
   final String nama;
   final String email;
   final String alamat;
   final String no_telpon;
   String? gambar;
   Contact({
+    this.id,
     required this.nama,
     required this.email,
     required this.alamat,
@@ -17,6 +19,7 @@ class Contact {
   });
 
   Contact copyWith({
+    ValueGetter<int?>? id,
     String? nama,
     String? email,
     String? alamat,
@@ -24,6 +27,7 @@ class Contact {
     ValueGetter<String?>? gambar,
   }) {
     return Contact(
+      id: id != null ? id() : this.id,
       nama: nama ?? this.nama,
       email: email ?? this.email,
       alamat: alamat ?? this.alamat,
@@ -34,6 +38,7 @@ class Contact {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'nama': nama,
       'email': email,
       'alamat': alamat,
@@ -44,6 +49,7 @@ class Contact {
 
   factory Contact.fromMap(Map<String, dynamic> map) {
     return Contact(
+      id: map['id']?.toInt(),
       nama: map['nama'] ?? '',
       email: map['email'] ?? '',
       alamat: map['alamat'] ?? '',
@@ -59,7 +65,7 @@ class Contact {
 
   @override
   String toString() {
-    return 'Contact(nama: $nama, email: $email, alamat: $alamat, no_telpon: $no_telpon, gambar: $gambar)';
+    return 'Contact(id: $id, nama: $nama, email: $email, alamat: $alamat, no_telpon: $no_telpon, gambar: $gambar)';
   }
 
   @override
@@ -67,6 +73,7 @@ class Contact {
     if (identical(this, other)) return true;
 
     return other is Contact &&
+        other.id == id &&
         other.nama == nama &&
         other.email == email &&
         other.alamat == alamat &&
@@ -76,7 +83,8 @@ class Contact {
 
   @override
   int get hashCode {
-    return nama.hashCode ^
+    return id.hashCode ^
+        nama.hashCode ^
         email.hashCode ^
         alamat.hashCode ^
         no_telpon.hashCode ^

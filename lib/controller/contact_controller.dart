@@ -58,17 +58,41 @@ class ContactController {
     }
   }
 
-  // Upload Image
-  Future<void> uploadGambar(ImageSource source, File file) async {
+  // Update Person Data
+  Future<Map<String, dynamic>> updatePerson(Contact person, File? file) async {
+    Map<String, String> data = {
+      "nama": person.nama,
+      "email": person.email,
+      "alamat": person.alamat,
+      "no_telpon": person.no_telpon
+    };
+
     try {
-      final picker = ImagePicker();
-      final pickedImage = await picker.pickImage(source: source);
-      final image = pickedImage;
-      if (image != null) {
-        file = File(image.path);
+      var response =
+          await contactService.updatePerson(person.id.toString(), data, file);
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          "message": "Data berhasil diperbarui",
+        };
+      } else {
+        if (response.headers['content-type']!.contains('application/json')) {
+          var decodedJson = jsonDecode(response.body);
+          return {
+            'success': false,
+            "message": decodedJson['message'] ?? 'Terjadi kesalahan',
+          };
+        }
+
+        var decodedJson = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': decodedJson['message'] ??
+              'Terjadi kesalahan saat memperbarui data'
+        };
       }
     } catch (e) {
-      log(e.toString());
+      return {"success": false, "message": 'Terjadi kesalahan: $e'};
     }
   }
 }

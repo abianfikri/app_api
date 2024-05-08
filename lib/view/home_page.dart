@@ -1,6 +1,7 @@
 import 'package:app_api/controller/contact_controller.dart';
 import 'package:app_api/model/contact.dart';
 import 'package:app_api/view/contact_add_page.dart';
+import 'package:app_api/view/contact_edit_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -50,6 +51,20 @@ class _HomePageState extends State<HomePage> {
                     ),
                     title: Text(person.nama),
                     subtitle: Text(person.email),
+                    onLongPress: () async {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ContactEditPage(
+                              id: person.id,
+                              beforenama: person.nama,
+                              beforealamat: person.alamat,
+                              beforemail: person.email,
+                              beforetelpon: person.no_telpon,
+                              beforeImage: person.gambar,
+                            ),
+                          ));
+                    },
                   ),
                 );
               },
