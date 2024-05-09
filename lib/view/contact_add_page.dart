@@ -57,17 +57,10 @@ class _PersonAddPageState extends State<PersonAddPage> {
             child: Center(
               child: Column(
                 children: [
-                  Container(
-                    margin: const EdgeInsets.all(10),
-                    width: 350,
-                    child: TextFormField(
-                      keyboardType: TextInputType.name,
-                      controller: nama,
-                      decoration: const InputDecoration(
-                        hintText: 'Masukkan Nama',
-                        labelText: 'Nama',
-                      ),
-                    ),
+                  CustomTf(
+                    nama: nama,
+                    hintText: "Masukkan nama",
+                    labelText: "Nama",
                   ),
                   Container(
                     margin: const EdgeInsets.all(10),
@@ -172,6 +165,35 @@ class _PersonAddPageState extends State<PersonAddPage> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomTf extends StatelessWidget {
+  const CustomTf({
+    super.key,
+    required this.nama,
+    required this.hintText,
+    required this.labelText,
+  });
+
+  final TextEditingController nama;
+  final String hintText;
+  final String labelText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(10),
+      width: 350,
+      child: TextFormField(
+        keyboardType: TextInputType.name,
+        controller: nama,
+        decoration: InputDecoration(
+          hintText: hintText,
+          labelText: labelText,
         ),
       ),
     );

@@ -8,18 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ContactEditPage extends StatefulWidget {
-  const ContactEditPage(
-      {super.key,
-      this.id,
-      this.beforenama,
-      this.beforemail,
-      this.beforealamat,
-      this.beforetelpon,
-      this.beforeImage});
+  const ContactEditPage({super.key, required this.data});
 
-  final int? id;
-  final String? beforenama, beforemail, beforealamat, beforetelpon;
-  final String? beforeImage;
+  final Map data;
 
   @override
   State<ContactEditPage> createState() => _ContactEditPageState();
@@ -55,11 +46,12 @@ class _ContactEditPageState extends State<ContactEditPage> {
 
   @override
   void initState() {
-    nama.text = widget.beforenama ?? '';
-    email.text = widget.beforemail ?? '';
-    alamat.text = widget.beforealamat ?? '';
-    noTelpon.text = widget.beforetelpon ?? '';
-    _imageFile = widget.beforeImage != null ? File(widget.beforeImage!) : null;
+    nama.text = widget.data['nama'];
+    email.text = widget.data['email'];
+    alamat.text = widget.data['alamat'];
+    noTelpon.text = widget.data['no_telpon'];
+    _imageFile = File(widget.data['gambar']);
+    print("Path gambar: ${_imageFile!.path}");
     super.initState();
   }
 
@@ -143,13 +135,20 @@ class _ContactEditPageState extends State<ContactEditPage> {
                   const SizedBox(
                     height: 30,
                   ),
-                  _imageFile == null
-                      ? const Text("Belum ada gambar yang dipilih")
-                      : Container(
-                          height: 250,
-                          margin: const EdgeInsets.all(20),
-                          child: Image.file(_imageFile!),
-                        ),
+                  Image.network(_imageFile!.path),
+                  // _imageFile != null
+                  //     ? (widget.data['gambar'] != null
+                  //         ? Container(
+                  //             width: 300,
+                  //             margin: const EdgeInsets.all(10),
+                  //             child: Image.network(widget.data['gambar']!),
+                  //           )
+                  //         : const Text("Belum ada gambar yang dipilih"))
+                  //     : Container(
+                  //         height: 250,
+                  //         margin: const EdgeInsets.all(20),
+                  //         child: Image.file(_imageFile!),
+                  //       ),
                   ElevatedButton(
                     onPressed: getImage,
                     child: const Text("Pilih Gambar"),
@@ -160,15 +159,21 @@ class _ContactEditPageState extends State<ContactEditPage> {
                   ElevatedButton(
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
+                          formKey.currentState!.save();
+                          print(widget.data['id']);
+                          print(widget.data['nama']);
+                          print(widget.data['alamat']);
+                          print(widget.data['email']);
+                          print(widget.data['gambar']);
                           var result = await controller.updatePerson(
-                            Contact(
-                                nama: nama.text,
-                                email: email.text,
-                                alamat: alamat.text,
-                                no_telpon: noTelpon.text,
-                                gambar: _imageFile!.path),
-                            _imageFile,
-                          );
+                              widget.data['id'],
+                              Contact(
+                                  nama: nama.text,
+                                  email: email.text,
+                                  alamat: alamat.text,
+                                  no_telpon: noTelpon.text,
+                                  gambar: _imageFile!.path),
+                              _imageFile);
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

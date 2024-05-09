@@ -59,7 +59,8 @@ class ContactController {
   }
 
   // Update Person Data
-  Future<Map<String, dynamic>> updatePerson(Contact person, File? file) async {
+  Future<Map<String, dynamic>> updatePerson(
+      int id, Contact person, File? file) async {
     Map<String, String> data = {
       "nama": person.nama,
       "email": person.email,
@@ -68,8 +69,7 @@ class ContactController {
     };
 
     try {
-      var response =
-          await contactService.updatePerson(person.id.toString(), data, file);
+      var response = await contactService.updatePerson(id, data, file);
       if (response.statusCode == 200) {
         return {
           'success': true,
@@ -93,6 +93,38 @@ class ContactController {
       }
     } catch (e) {
       return {"success": false, "message": 'Terjadi kesalahan: $e'};
+    }
+  }
+
+  Future<Map<String, dynamic>> deletePerson(int id) async {
+    try {
+      var response = await contactService.deletePerson(id);
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'message': 'Data Berhasil dihapus',
+        };
+      } else {
+        if (response.headers['content-type']!.contains('application/json')) {
+          var decodedJson = jsonDecode(response.body);
+          return {
+            'success': false,
+            'message': decodedJson['message'] ?? 'Terjadi kesalahan',
+          };
+        }
+
+        var decodedJson = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message':
+              decodedJson['message'] ?? 'Terjadi kesalahan saat menghapus data',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Terjadi kesalahan: $e',
+      };
     }
   }
 }

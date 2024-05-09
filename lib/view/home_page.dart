@@ -51,19 +51,22 @@ class _HomePageState extends State<HomePage> {
                     ),
                     title: Text(person.nama),
                     subtitle: Text(person.email),
-                    onLongPress: () async {
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () async {
+                        setState(() {
+                          controller.deletePerson(person.id!);
+                        });
+                      },
+                    ),
+                    onTap: () async {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ContactEditPage(
-                              id: person.id,
-                              beforenama: person.nama,
-                              beforealamat: person.alamat,
-                              beforemail: person.email,
-                              beforetelpon: person.no_telpon,
-                              beforeImage: person.gambar,
-                            ),
-                          ));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ContactEditPage(data: person.toMap()),
+                        ),
+                      );
                     },
                   ),
                 );

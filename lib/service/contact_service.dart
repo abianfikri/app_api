@@ -46,9 +46,9 @@ class ContactService {
   }
 
   Future<http.Response> updatePerson(
-      String id, Map<String, String> data, File? file) async {
+      int id, Map<String, String> data, File? file) async {
     var request = http.MultipartRequest(
-      'PUT',
+      'POST',
       getUri('$endpoint/$id'),
     )
       ..fields.addAll(data)
@@ -59,5 +59,20 @@ class ContactService {
     }
 
     return await http.Response.fromStream(await request.send());
+  }
+
+  Future<http.Response> deletePerson(int id) async {
+    var response = await http.delete(
+      getUri('$endpoint/$id'),
+      headers: {
+        "Accept": "application/json",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return response;
+    } else {
+      throw Exception('Failed to delete person: ${response.reasonPhrase}');
+    }
   }
 }
